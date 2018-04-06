@@ -22,13 +22,7 @@ module.exports = function( grunt ) {
 
 
           },
-          {
-            width: 610,
-            suffix: '_medium',
-            quality: 48,
-
-
-          },
+        
 
 
 

@@ -45,6 +45,6 @@ self.addEventListener('fetch', function(event) {
       }
       console.log('Network request for ', event.request.url);
       return fetch(event.request);
-});
-);
+}));
+;
 });
