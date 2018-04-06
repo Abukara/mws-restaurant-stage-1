@@ -26,9 +26,9 @@
 .inside #map-container {
   position: relative;
   height: 50vw;
-
-  width: 100vw;
-
+  margin-top:25px;
+  width: 90%;
+  margin-left: 15px;
 }
 .inside #map {
   background-color: #ccc;
@@ -87,7 +87,7 @@ overflow:hidden;
 
   position: relative;
   width: 80vw;
-  border-radius: 20px 0px 0px;
+
 
 
 }

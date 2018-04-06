@@ -29,6 +29,7 @@ a {
 a:hover, a:focus {
 	color: #3397db;
 	text-decoration: none;
+	border-width:thick;
 }
 a img{
 	border: none 0px #fff;
@@ -347,6 +348,7 @@ nav > li > a:focus {
   padding: 0 20px 20px;
   position: relative;
   width: 100%;
+	border-radius: 20px 0px 0px;
 }
 #reviews-list p{
 	display: block;
