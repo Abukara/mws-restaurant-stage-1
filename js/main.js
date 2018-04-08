@@ -11,10 +11,7 @@ document.addEventListener('DOMContentLoaded', (event) => {
   fetchNeighborhoods();
   fetchCuisines();
 });
-/**
-* registers the sw
-*
-*/
+
 
 /**
  * Fetch all neighborhoods and set their HTML.
@@ -84,6 +81,7 @@ window.initMap = () => {
     center: loc,
     scrollwheel: false
   });
+
   updateRestaurants();
 }
 
@@ -145,10 +143,10 @@ createRestaurantHTML = (restaurant) => {
   const image = document.createElement('img');
   image.className = 'restaurant-img';
   image.src = DBHelper.imageUrlForRestaurant(restaurant);
-  image.setAttribute("alt",restaurant.name +' picture');
+  image.setAttribute("alt",'Image of '+restaurant.name +' Restaurant');
   li.append(image);
 
-  const name = document.createElement('h1');
+  const name = document.createElement('h2');
   name.innerHTML = restaurant.name;
   li.append(name);
 
@@ -179,18 +177,5 @@ addMarkersToMap = (restaurants = self.restaurants) => {
       window.location.href = marker.url
     });
     self.markers.push(marker);
-  });
-}
-
-
-/*Addd service worker*/
-
-if ('serviceWorker' in navigator) {
-  navigator.serviceWorker.register('service-worker.js')
-  .then(function(registration) {
-    console.log('Registration successful, scope is:', registration.scope);
-  })
-  .catch(function(error) {
-    console.log('Service worker registration failed, error:', error);
   });
 }
