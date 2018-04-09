@@ -1,6 +1,4 @@
-
 const cache_name = 'precache-v1';
-
 const urls_to_cache = ['css/styles.css',
 'css/responsive.css',
 'img/1.jpg',
@@ -20,7 +18,6 @@ const urls_to_cache = ['css/styles.css',
 'js/dbhelper.js',
 'data/restaurants.json',
 'https://maps.googleapi.com/js'
-
 ];
 
 self.addEventListener('install', (event) => {
