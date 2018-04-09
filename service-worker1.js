@@ -1,6 +1,4 @@
-/*orientation at
-https://github.com/GoogleChromeLabs/sw-toolbox/issues/227
-*/
+
 const cache_name = 'precache-v1';
 
 const urls_to_cache = ['css/styles.css',
@@ -94,3 +92,6 @@ self.addEventListener('activate', (event) => {
     })
   );
 });
+/*orientation at
+https://github.com/GoogleChromeLabs/sw-toolbox/issues/227
+*/
