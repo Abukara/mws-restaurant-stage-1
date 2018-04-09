@@ -1,9 +1,9 @@
-//usage of https://github.com/GoogleChromeLabs/sw-toolbox/issues/227
-// couldn't solve a fetch problem with with the service worker.
+/*orientation at
+https://github.com/GoogleChromeLabs/sw-toolbox/issues/227
+*/
+const cache_name = 'precache-v1';
 
-const PRECACHE = 'precache-v1';
-
-const PRECACHE_URLS = ['css/styles.css',
+const urls_to_cache = ['css/styles.css',
 'css/responsive.css',
 'img/1.jpg',
 'img/2.jpg',
@@ -29,10 +29,10 @@ self.addEventListener('install', (event) => {
     console.info('Event: Install');
 
     event.waitUntil(
-      caches.open(PRECACHE)
+      caches.open(cache_name)
       .then((cache) => {
         //[] of files to cache & if any of the file not present `addAll` will fail
-        return cache.addAll(PRECACHE_URLS)
+        return cache.addAll(urls_to_cache)
         .then(() => {
           console.info('All files are cached');
           return self.skipWaiting(); //To forces the waiting service worker to become the active service worker
@@ -61,7 +61,7 @@ self.addEventListener('install', (event) => {
       //if request is not cached, add it to cache
       return fetch(request).then((response) => {
         var responseToCache = response.clone();
-        caches.open(PRECACHE).then((cache) => {
+        caches.open(cache_name).then((cache) => {
             cache.put(request, responseToCache).catch((err) => {
               console.warn(request.url + ': ' + err.message);
             });
@@ -83,10 +83,10 @@ self.addEventListener('activate', (event) => {
 
   //Remove old and unwanted caches
   event.waitUntil(
-    caches.keys().then((PRECACHE) => {
+    caches.keys().then((cache_name) => {
       return Promise.all(
-        PRECACHE.map((cache) => {
-          if (cache !== PRECACHE) {     //cacheName = 'cache-v1'
+        cache_name.map((cache) => {
+          if (cache !== cache_name) {     //cacheName = 'cache-v1'
             return caches.delete(cache); //Deleting the cache
           }
         })
