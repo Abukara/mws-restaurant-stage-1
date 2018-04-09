@@ -1,3 +1,6 @@
+//usage of https://github.com/GoogleChromeLabs/sw-toolbox/issues/227
+// couldn't solve a fetch problem with with the service worker.
+
 const PRECACHE = 'precache-v1';
 
 const PRECACHE_URLS = ['css/styles.css',
