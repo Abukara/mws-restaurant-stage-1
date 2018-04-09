@@ -1,5 +1,5 @@
 const PRECACHE = 'precache-v1';
-const RUNTIME = 'runtime';
+
 const PRECACHE_URLS = ['css/styles.css',
 'css/responsive.css',
 'img/1.jpg',
