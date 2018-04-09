@@ -477,3 +477,14 @@ float: left;
     margin-top: 80px;
   }
 }
+@media screen and (min-width:1400px){
+	.inside #map-container{
+width:49%;
+	}
+}
+
+@media screen and (min-width:1600px){
+	.inside #map-container{
+width:50%;
+	}
+}
