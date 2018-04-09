@@ -22,12 +22,7 @@ module.exports = function( grunt ) {
 
 
           },
-        
-
-
-
-                        {
-
+          {
                             width: 840,
                             suffix: "_large",
                             quality: 60,
@@ -44,12 +39,10 @@ module.exports = function( grunt ) {
                     expand: true,
                     src: [ '*.{gif,jpg,png}' ],
                     cwd: 'img/',
-                    dest: 'imge/'
+                    dest: 'images/'
         } ]
             }
         },
-
-        /* Clear out the images directory if it exists */
 
 
         /* Generate the images directory if it is missing */
