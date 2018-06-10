@@ -1,0 +1,38 @@
+{
+  "short_name": "restaurant manifest",
+  "name": "Restaurant review page",
+  "description": "Webpage / app to find restaurant near you",
+  "start_url": "index.html?launcher=true",
+  "display": "standalone",
+  "theme_color": "#252831",
+  "background_color": "#FAFAFA",
+
+  "icons": [
+    {
+      "src": "icons/icon-48x48.png",
+      "type": "image/png",
+      "sizes": "48x48"
+    },
+    {
+      "src": "icons/icon-96x96.png",
+      "type": "image/png",
+      "sizes": "96x96"
+    },
+    {
+      "src": "icons/icon-192x192.png",
+      "type": "image/png",
+      "sizes": "192x192"
+    },
+    {
+     "src": "icons/icon-256x256.png",
+     "sizes": "256x256",
+     "type": "image/png"
+   },
+   {
+    "src": "icons/icon-512x512.png",
+    "sizes": "512x512",
+    "type": "image/png"
+  }
+  ]
+
+}

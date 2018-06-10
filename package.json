@@ -1,51 +1,64 @@
 {
-  "name": "grunt-responsive-images",
-  "description": "Produce images at different sizes for responsive websites.",
-  "version": "1.10.1",
-  "homepage": "https://github.com/andismith/grunt-responsive-images",
-  "author": {
-    "name": "andismith",
-    "email": "andi.smith.uk@gmail.com",
-    "url": "http://www.andismith.com"
-  },
-  "repository": {
-    "type": "git",
-    "url": "git://github.com/andismith/grunt-responsive-images.git"
-  },
-  "bugs": {
-    "url": "https://github.com/andismith/grunt-responsive-images/issues"
-  },
-  "license": "MIT",
-  "main": "Gruntfile.js",
-  "engines": {
-    "node": ">= 4.4.2"
-  },
+  "name": "mws-restaurant",
+  "version": "1.0.0",
+  "description": "restaurant page for udacity course",
   "scripts": {
-    "test": "grunt test"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "serve": "gulp serve"
+  },
+  "author": "",
+  "license": "ISC",
+  "private": true,
+  "devDependencies": {
+    "babel-eslint": "^8.0.2",
+    "babelify": "^6.2.0",
+    "browserify": "^11.0.1",
+    "busboy": "^0.2.9",
+    "closest": "0.0.1",
+    "compression": "^1.5.2",
+    "del": "^1.2.1",
+    "es6-promise": "^3.0.2",
+    "eslint": "^4.10.0",
+    "express": "^4.13.3",
+    "gulp": "^3.9.0",
+    "gulp-autoprefixer": "latest",
+    "gulp-babel": "^5.2.1",
+    "gulp-csso": "^2.0.0",
+    "gulp-define-module": "^0.1.3",
+    "gulp-develop-server": "^0.4.3",
+    "gulp-handlebars": "^4.0.0",
+    "gulp-htmlmin": "^3.0.0",
+    "gulp-imagemin": "^4.1.0",
+    "gulp-load-plugins": "^0.10.0",
+    "gulp-rename": "^1.2.2",
+    "gulp-sass": "^3.1.0",
+    "gulp-sourcemaps": "^1.5.2",
+    "gulp-uglify": "^2.0.0",
+    "gulp-util": "^3.0.6",
+    "gulp-webp": "^3.0.0",
+    "handlebars": "^3.0.3",
+    "hbsfy": "^2.2.1",
+    "hbsify": "^1.0.1",
+    "idb": "^1.0.1",
+    "lodash": "^3.10.1",
+    "markov": "0.0.7",
+    "merge-stream": "^1.0.0",
+    "minimist": "^1.2.0",
+    "run-sequence": "^1.1.2",
+    "simple-transition": "^1.0.0",
+    "throttle": "^1.0.3",
+    "through2": "^2.0.0",
+    "vinyl-buffer": "^1.0.0",
+    "vinyl-source-stream": "^1.1.0",
+    "watchify": "^3.3.1",
+    "webpack": "^4.12.0",
+    "ws": "^0.8.0"
   },
   "dependencies": {
-    "async": "~1.5.2",
-    "gm": "~1.23.0",
-    "grunt": ">=0.4.5",
-    "lodash": ">=4.6.1"
-  },
-  "devDependencies": {
-    "grunt-contrib-jshint": "~1.0.0",
-    "grunt-contrib-clean": "~1.0.0",
-    "grunt-contrib-nodeunit": "~1.0.0",
-    "q": "~1.4.1"
-  },
-  "keywords": [
-    "grunt",
-    "gruntplugin",
-    "img",
-    "image",
-    "images",
-    "picturefill",
-    "responsive",
-    "responsivedesign",
-    "srcset",
-    "imagemagick",
-    "graphicsmagick"
-  ]
+    "browser-sync": "^2.24.4",
+    "critical": "^1.3.3",
+    "indexdb": "0.0.0",
+    "puppeteer": "^1.5.0",
+    "uglifyify": "^5.0.0"
+  }
 }
