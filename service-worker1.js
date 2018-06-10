@@ -89,8 +89,8 @@ addEventListener('fetch', event => {
                 headers: {'Content-Type': 'application/json'}
               };
               // stringify Json to keep it in db.
-              const indexDBResponse = new Response(JSON.stringify(dbdata), response);
-              return indexDBResponse;
+              const idbResponse = new Response(JSON.stringify(dbdata), response);
+              return idbResponse;
             }
           })
 
