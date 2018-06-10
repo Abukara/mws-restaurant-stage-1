@@ -4,6 +4,9 @@ let restaurants,
 var map
 var markers = []
 
+
+
+
 /**
  * Fetch neighborhoods and cuisines as soon as the page is loaded.
  */
@@ -11,7 +14,6 @@ document.addEventListener('DOMContentLoaded', (event) => {
   fetchNeighborhoods();
   fetchCuisines();
 });
-
 
 /**
  * Fetch all neighborhoods and set their HTML.
@@ -79,7 +81,8 @@ window.initMap = () => {
   self.map = new google.maps.Map(document.getElementById('map'), {
     zoom: 12,
     center: loc,
-    scrollwheel: false
+    scrollwheel: false,
+    format: 'jpg'
   });
 
   updateRestaurants();
@@ -137,15 +140,20 @@ fillRestaurantsHTML = (restaurants = self.restaurants) => {
 /**
  * Create restaurant HTML.
  */
+
 createRestaurantHTML = (restaurant) => {
   const li = document.createElement('li');
 
   const image = document.createElement('img');
-  image.className = 'restaurant-img';
-  image.src = DBHelper.imageUrlForRestaurant(restaurant);
-  image.setAttribute("alt",'Image of '+restaurant.name +' Restaurant');
-  li.append(image);
+  image.className = 'restaurant-img lazyload';
+  image.alt=`${restaurant.name} restaurant`;
+  image.tabIndex="0";
+  const imagesrc = DBHelper.imageUrlForRestaurant(restaurant);
 
+
+  image.setAttribute('data-src', imagesrc +'-webp.webp')
+  li.append(image);
+lazyload();
   const name = document.createElement('h2');
   name.innerHTML = restaurant.name;
   li.append(name);
@@ -178,9 +186,4 @@ addMarkersToMap = (restaurants = self.restaurants) => {
     });
     self.markers.push(marker);
   });
-}
-/* install service worker */
-
-if ('serviceWorker' in navigator) {
-  navigator.serviceWorker.register('../service-worker1.js');
 }
