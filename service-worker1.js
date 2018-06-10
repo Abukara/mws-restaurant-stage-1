@@ -72,24 +72,24 @@ addEventListener('fetch', event => {
                   addDB(values);
 
                   console.log("Saving to DB");
-                  var init = {
+                  var response = {
                     status: 200,
                     statusText: "OK",
                     headers: {'Content-Type': 'application/json'}
                   };
 
-                  const fetchResponse = new Response(JSON.stringify(values), init);
+                  const fetchResponse = new Response(JSON.stringify(values), response);
                   return fetchResponse;
                 })
               })
             }else{
-              var init = {
+              var response = {
                 status: 200,
                 statusText: "OK",
                 headers: {'Content-Type': 'application/json'}
               };
               // stringify Json to keep it in db.
-              const indexDBResponse = new Response(JSON.stringify(dbdata), init);
+              const indexDBResponse = new Response(JSON.stringify(dbdata), response);
               return indexDBResponse;
             }
           })
