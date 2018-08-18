@@ -1,31 +1,37 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
   <meta name="viewport" content="width=device-width, minimum-scale=1.0, initial-scale=1.0, user-scalable=yes">
   <meta charset="utf-8">
 <meta http-equiv="Cache-control" content="no-cache">
   <meta name="theme-color" content="#252831"/>
-  <base target="_blank">
-  <link rel="stylesheet" src="//normalize-css.googlecode.com/svn/trunk/normalize.css" />
-  <link rel="preload" as="style" href="css/styles.min.css" onload="this.rel='stylesheet'">
-
   <link rel="manifest" href="manifest.json">
+   <link rel="preload" as="style" href="css/styles.css" onload="this.rel='stylesheet'">
+ <style>body{background-color: #fdfdfd;margin: 0;position:relative;display: flex;flex-wrap: wrap;
+flex-direction: column;align-items: center;}
 
-  <title>Restaurant Reviews</title>
+
+ </style>
+    <title>Restaurant Reviews</title>
 </head>
 
 <body>
   <header>
     <a class="hidden" href="#neighborhoods-select">Skip to Main content</a>
     <nav role="navigation">
-      <h1><a href="/">Restaurant Reviews</a></h1>
+      <h1>
+        <a href="/">Restaurant Reviews</a>
+<img class="map_toggle" src="img/map_icon1.png" alt="maptoggle"onclick="toggleMap()"></img>
+      </h1>
+
     </nav>
+
   </header>
 
   <main id="maincontent">
     <section id="map-container" role="application" aria-label="Restaurant map">
       <div id="map"></div>
+      <img tabindex="0" role="application"  aria-label="Google map, click to active interactive map"  class="static_map" />
     </section>
     <section role="listbox" aria-label="filter options">
       <div class="filter-options">
@@ -40,7 +46,7 @@
       <ul id="restaurants-list"></ul>
     </section>
   </main>
-  <script  type="application/javascript" charset="utf-8" src="js/lazyload.min.js"></script>
+
   <script>if ('serviceWorker' in navigator) {
     window.addEventListener('load', function() {
     navigator.serviceWorker.register('../service-worker1.js')
@@ -52,14 +58,12 @@
     });
   });
   }</script>
-    <script src="js/idb.js" type="module"></script>
-
-<script src="https://cdn.jsdelivr.net/npm/lazyload@2.0.0-beta.2/lazyload.js"></script>
+    <script src="js/idb-min.js" type="module"></script>
     <script type="application/javascript" charset="utf-8" src="js/dbhelper.js"></script>
-    <script type="application/javascript" charset="utf-8" src="js/main.js"></script>
-<!--key=AIzaSyDjM591f8puFMFiKK56kVZlsXdsCjerPSU -->
-  <script async defer src="https://maps.googleapis.com/maps/api/js?&libraries=places&callback=initMap"></script>
-
+    <script type="application/javascript" charset="utf-8" src="js/main.js" onload="init()"></script>
+<!--key=AIzaSyDjM591f8puFMFiKK56kVZlsXdsCjerPSU <script src="https://cdnjs.cloudflare.com/ajax/libs/vanilla-lazyload/8.11.0/lazyload.min.js"></script>-->
+ <script async defer="defer" src="https://maps.googleapis.com/maps/api/js?&callback=initMap"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/vanilla-lazyload/8.11.0/lazyload.min.js"></script>
 
   <footer id="footer">
     Copyright (c) 2017 <a href="/"><strong>Restaurant Reviews</strong></a> All Rights Reserved.

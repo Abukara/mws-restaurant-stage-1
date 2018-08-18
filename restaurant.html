@@ -1,4 +1,5 @@
 <!DOCTYPE html>
+<html lang="en">
 <html>
 
 <head>
@@ -10,7 +11,7 @@
 
 <link rel="manifest" href="/manifest.json">
 
-  <link rel="preload" as="style" href="css/styles.min.css" onload="this.rel='stylesheet'">
+  <link rel="preload" as="style" href="css/styles.css" onload="this.rel='stylesheet'">
 
   <title>Restaurant Info</title>
 </head>
@@ -22,7 +23,10 @@
     <a class="hidden" href="#restaurant-name">Skip to Restaurant content    </a>
     <!-- Beginning nav -->
     <nav role="navigation" aria-label="Breadcrumb">
-      <h1><a href="/">Restaurant Reviews</a></h1>
+      <h1>
+        <a href="/">Restaurant Reviews</a>
+<img class="map_toggle" src="img/map_icon1.png" alt="maptoggle"onclick="toggleMap()">
+      </h1>
       <ul id="breadcrumb" aria-label="Breadcrumb">
         <li><a href="/">Home</a></li>
       </ul>
@@ -45,15 +49,35 @@
     <!-- Beginning restaurant -->
     <section id="restaurant-container">
       <h2 id="restaurant-name"></h2>
+      
+      <button id="favorite-btn" onclick = "markFavorite(this)"><img src="img/star-regular.svg" alt="star"style="width:2vw;"></button>
       <img id="restaurant-img">
+
       <p id="restaurant-cuisine"></p>
       <p id="restaurant-address"></p>
       <table id="restaurant-hours"></table>
     </section>
     <!-- end restaurant -->
     <!-- Beginning reviews -->
+    <div id="review-form">
+
+   
+    </div>
     <section id="reviews-container">
-      <ul id="reviews-list"></ul>
+      <ul id="reviews-list">
+  <!--       const submitbtn = renderHtml("input");
+  submitbtn.setAttribute("type","button");
+  //submitbtn.setAttribute("form","reviewForm123");
+  submitbtn.setAttribute("value","Add Review");
+  submitbtn.setAttribute("name","Name");
+
+  submitbtn.setAttribute("onclick","addReview();");
+-->
+
+
+
+        <input type="button" id="synctest"form="reviewForm123"value="Add Review"name="Name"></input>
+      </ul>
     </section>
     <!-- End reviews -->
   </main>
@@ -77,12 +101,13 @@
 }</script>
   <!-- Beginning scripts -->
   <!-- Database helpers -->
-  <script type="text/javascript" src="js/dbhelper.js"></script>
+ <script type="text/javascript" src="js/dbhelper.js"></script>
   <!-- Main javascript file -->
-  <script type="text/javascript" src="js/restaurant_info.js"></script>
+  <script type="text/javascript" src="js/restaurant_info.js" ></script>
+   <script type="text/javascript" src="/js/store.js"></script>
   <!--Google Maps-->
   <!--key=AIzaSyDjM591f8puFMFiKK56kVZlsXdsCjerPSU -->
-    <script async defer src="https://maps.googleapis.com/maps/api/js?&libraries=places&callback=initMap"></script>
+  <script async defer="defer" src="https://maps.googleapis.com/maps/api/js?&callback=initMap"></script>
   <!-- End scripts -->
 
 </body>
