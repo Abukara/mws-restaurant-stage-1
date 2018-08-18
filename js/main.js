@@ -5,15 +5,26 @@ var map
 var markers = []
 
 
+/**
+ * toggle Map when the img is clicked
+ */
+const toggleMap = () => {
+    if (document.getElementById('map-container').style.display === 'block')
+      document.getElementById('map-container').style.display = 'none'
+    else
+      document.getElementById('map-container').style.display = 'block'
+
+  }
 
 
 /**
  * Fetch neighborhoods and cuisines as soon as the page is loaded.
  */
-document.addEventListener('DOMContentLoaded', (event) => {
+const init= () => {
   fetchNeighborhoods();
   fetchCuisines();
-});
+}
+
 
 /**
  * Fetch all neighborhoods and set their HTML.
@@ -52,6 +63,7 @@ fetchCuisines = () => {
     } else {
       self.cuisines = cuisines;
       fillCuisinesHTML();
+      updateRestaurants();
     }
   });
 }
@@ -74,6 +86,7 @@ fillCuisinesHTML = (cuisines = self.cuisines) => {
  * Initialize Google map, called from HTML.
  */
 window.initMap = () => {
+ 
   let loc = {
     lat: 40.722216,
     lng: -73.987501
@@ -85,7 +98,7 @@ window.initMap = () => {
     format: 'jpg'
   });
 
-  updateRestaurants();
+  
 }
 
 /**
@@ -143,19 +156,23 @@ fillRestaurantsHTML = (restaurants = self.restaurants) => {
 
 createRestaurantHTML = (restaurant) => {
   const li = document.createElement('li');
-
+  
   const image = document.createElement('img');
-  image.className = 'restaurant-img lazyload';
+  image.className = 'restaurant-img lazy';
   image.alt=`${restaurant.name} restaurant`;
   image.tabIndex="0";
   const imagesrc = DBHelper.imageUrlForRestaurant(restaurant);
+var myLazyLoad = new LazyLoad({
+    elements_selector: ".lazy"
+});
 
-
-  image.setAttribute('data-src', imagesrc +'-webp.webp')
+  image.setAttribute('src', imagesrc +'-webp.webp')
   li.append(image);
-lazyload();
+ 
   const name = document.createElement('h2');
   name.innerHTML = restaurant.name;
+  if(restaurant.is_favorite==='true')
+    name.innerHTML+=' <span class="favorite" ><img src="img/star-regular.svg" alt="star" style="width:2vw;"></span>';
   li.append(name);
 
   const neighborhood = document.createElement('p');
@@ -165,10 +182,11 @@ lazyload();
   const address = document.createElement('p');
   address.innerHTML = restaurant.address;
   li.append(address);
-
+  
   const more = document.createElement('a');
   more.innerHTML = 'View Details';
   more.href = DBHelper.urlForRestaurant(restaurant);
+  
   li.append(more)
 
   return li

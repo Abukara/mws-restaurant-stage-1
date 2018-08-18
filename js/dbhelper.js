@@ -3,14 +3,47 @@
  */
 class DBHelper {
 
-  /**
-   * Database URL.
-   * Change this to restaurants.json file location on your server.
-   */
+
+
   static get DATABASE_URL() {
     const port = 1337 // Change this to your server port
     return `http://localhost:${port}/restaurants`;
   }
+  static  Restaurant_ID_URL(id) {
+    const port = 1337 // Change this to your server port
+    url= `http://localhost:${port}/restaurants/${id}`;
+  }
+static  Reviews_URL_ID(id) {
+    const port = 1337 // Change this to your server port
+    return `http://localhost:${port}/reviews/?restaurant_id=${id}`;
+  }
+  static  Reviews_URL() {
+    const port = 1337 // Change this to your server port
+    return `http://localhost:${port}/reviews`;
+  }
+  static  Favorite_URL(favorite,rest_id) {
+    const port = 1337 // Change this to your server port
+    console.log(favorite);
+    if(favorite==="yes"){
+      return  `http://localhost:${port}/restaurants/${rest_id}/?is_favorite=true`;
+    }else{
+      return  `http://localhost:${port}/restaurants/${rest_id}/?is_favorite=false`;
+    }
+
+  }
+
+static markAsFavorite(restaurant) {
+  var mark =(restaurant.is_favorite ==='true'?"yes":"no");
+  console.log(mark);
+  return fetch(DBHelper.Favorite_URL(mark,restaurant.id),{method:'PUT',body:restaurant})
+     .then(function (response) {
+       if(response.ok) {
+       return response.json();
+       } else {
+         console.log("response is wrong markFavorite");
+       }
+     });
+    }
 
   /**
    * Fetch all restaurants. change from xhr to aja fetch
@@ -32,11 +65,35 @@ class DBHelper {
        ).catch(error => callback(error, null));
      }
 
+     static fetchReviewsByRestaurant(id){
+       return fetch(DBHelper.Reviews_URL_ID(id))
+         .then(response => {
+           if (response.status === 200) {
+             return response.json();
+               } else {
+             console.log(`Request failed. Returned status of ${response.status}`);
+           }
+         }
+       );
+     }
 
-  /**
-   * Fetch a restaurant by its ID.
-   */
-  static fetchRestaurantById(id, callback) {
+
+
+static postReviews(review) {
+  return fetch(DBHelper.Reviews_URL(),{method:'post',body:review})
+     .then(function (response) {
+       if(response.status === 200) {
+       return response.json();
+       } else {
+         console.log(`Request failed. Returned status of ${response.status}`);
+       }
+     });
+    }
+
+
+
+ //   Fetch a restaurant by its ID.
+     static fetchRestaurantById(id, callback) {
     // fetch all restaurants with proper error handling.
     DBHelper.fetchRestaurants((error, restaurants) => {
       if (error) {
@@ -51,6 +108,10 @@ class DBHelper {
       }
     });
   }
+
+
+
+
 
   /**
    * Fetch restaurants by a cuisine type with proper error handling.
@@ -145,14 +206,20 @@ class DBHelper {
    * Restaurant page URL.
    */
   static urlForRestaurant(restaurant) {
-    return (`./restaurant.html?id=${restaurant.id}`);
+    return (`/restaurant.html?id=${restaurant.id}`);
   }
 
   /**
    * Restaurant image URL. removed .jpg to serve webp in index.html and restaurant.html
+   * replace not found img with img nr. 10
    */
-  static imageUrlForRestaurant(restaurant) {
-    return (`/img/${restaurant.photograph}`);
+    static imageUrlForRestaurant(restaurant) {
+    if(restaurant.photograph){
+      return `/img/${restaurant.photograph}`
+    }else{
+      return (`/img/10`);
+    }
+    
   }
 
   /**
