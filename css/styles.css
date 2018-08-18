@@ -35,14 +35,12 @@ a:hover, a:focus {
 a img{
 	border: none 0px #fff;
 }
-h1, h2, h3, h4, h5, h6 {
+h1, h2, h3 {
   font-family: Arial, Helvetica, sans-serif;
   margin: 0 0 20px;
 
 }
-article, aside, canvas, details, figcaption, figure, footer, header, hgroup, menu, nav, section {
-	display: block;
-}
+
 #maincontent {
   background-color: #f3f3f3;
   min-height: 100%;
@@ -57,7 +55,7 @@ article, aside, canvas, details, figcaption, figure, footer, header, hgroup, men
   text-transform: uppercase;
 	width:calc(100% - 50px);
 }
-/* ====================== Navigation ====================== */
+/* ================================================================ Navigation ================================================================ */
 nav {
   width: 100vw;
   height: 80px;
@@ -86,25 +84,25 @@ nav  a {
     width: 100vw;
 }
 
-/* Display list items side by side */
+/*=============================================================== Display list items side by side ========================================================*/
 #breadcrumb li {
     display: inline;
 }
 
-/* Add a slash symbol (/) before/behind each list item */
+/*================================================== Add a slash symbol (/) before/behind each list item ========================================================*/
 #breadcrumb li+li:before {
     padding: 8px;
     color: black;
     content: "/\00a0";
 }
 
-/* Add a color to all links inside the list */
+/* ===================================Add a color to all links inside the list ========================================================*/
 #breadcrumb li a {
     color: #0E5280;
     text-decoration: none;
 }
 
-/* Add a color on mouse-over */
+/* ===============================================================Add a color on mouse-over========================================== */
 #breadcrumb li a:hover {
     color: #01447e;
     text-decoration: underline;
@@ -116,7 +114,7 @@ nav  a {
 	  right: 10px;
 }
 
-/* ================ Aria / Accesibility ======= */
+/* ========================================================== Aria / Accesibility =================================================================================== */
 /*adding style hidden for skipping google maps */
 .hidden
 {position:absolute;
@@ -133,7 +131,7 @@ background: #BF1722;
 	left:0;
 }
 
-/* ======== Focus ========== */
+/* ================================================================ Focus ================================================================================ */
 button:focus,
 button:hover,
 select:focus,
@@ -174,7 +172,7 @@ nav > li > a:focus {
 
 
 }
-/* ==================== Map-Container ======================== */
+/* =================================================================== Map-Container =========================================================== */
 
 #map-container{
 	width: 100%;
@@ -183,14 +181,14 @@ nav > li > a:focus {
 	display:none;
 }
 
-/* ====================== Map ====================== */
+/* ========================================================================= Map ================================================================ */
 #map {
 	order: 1;
   height: 400px;
   width: 100%;
   background-color: #ccc;
 }
-/* ====================== Restaurant Filtering ====================== */
+/* ============================================================= Restaurant Filtering ================================================================ */
 .filter-options {
   width: 100%;
   height: 70px;
@@ -219,11 +217,7 @@ nav > li > a:focus {
 }
 
 
-
-
-
-
-/* ====================== Restaurant Listing ====================== */
+/* ===================================================================== Restaurant Listing ========================================================= */
 #restaurants-list {
 	display: flex;
 	flex-wrap: wrap;
@@ -325,7 +319,7 @@ button#favorite-btn.favorite  {
 
 
 
-/* ====================== Restaurant Details ====================== */
+/* ============================================================== Restaurant Details ====================================================================== */
 .inside header {
   position: fixed;
   top: 0;
@@ -381,7 +375,7 @@ button#favorite-btn.favorite  {
 	width: 100%;
 }
 
-/*====== Reviews List ====== */
+/*=============================================================== Reviews List ============================================================= */
 
 #restaurant-container, #reviews-container {
   border-bottom: 1px solid #d9d9d9;
@@ -434,10 +428,7 @@ float: left;
   color: #666;
 }
 
-
-
-
-/* FORM*/
+/* ========================================= FORM ========================================================================*/
 #reviewForm123{
  
   padding: 4em 4em 4em;
@@ -506,11 +497,6 @@ display: block;
   transition: all 0.5s ease-in-out;
   }
 
-
-
-
-
-
 #reviewForm123 label{
     color: #002E00;
     font-size: 16px;
@@ -521,7 +507,7 @@ display: block;
      
   }
 
-/*=============================== Media Quereies 2  */
+/*=============================== Media Quereies ================================================================ */
 @media screen and (min-width: 750px){
 #restaurants-list p{
   font-size: 15px;
@@ -570,7 +556,8 @@ display: block;
 
 
 
-/*============================== Media Queries ============================== */
+/*============================== Media Queries greater than 950px ============================== */
+
 
 @media screen and (min-width:950px){
   #restaurants-list p{
@@ -613,42 +600,8 @@ display: block;
   	width: 100%;
   }
 }
-@media screen and (min-width:1120px){
-  .inside #map-container{
-    position: absolute;
-    width: 48%;
-    height:calc(100% - (13%));
-    top: 80px;
-    margin-top: 80px;
-		display:none;
-  }
-}
-@media screen and (min-width:1400px){
-	.inside #map-container{
-width:49%;
-	}
-}
 
-@media screen and (min-width:1600px){
-	.inside #map-container{
-width:50%;
-	}
-}
-
-@media screen and (max-width: 550px){
-body{
-  overflow-x:hidden;
-}
-  .filter-options{
-    display: inline-table;
-    text-align: center;
-  }
-  nav a{
-    font-size: 10pt;
-    letter-spacing: 4px;
-  }
-}
-
+/*=============================================== Screen size upto 750 px ======================================================================*/
 
 @media screen and (max-width: 750px){
   nav a{
@@ -734,17 +687,12 @@ body{
     border: 2px solid #f3f3f3;
     display: block;
     list-style-type: none;
-  overflow:hidden;
-
+    overflow:hidden;
     position: relative;
     width: 80vw;
-
-
-
   }
 
-
-
+/*=============================================== Screen wider than 750 px ======================================================================*/
 @media screen and (min-width: 750px){
 #restaurants-list p{
   font-size: 15px;
@@ -791,6 +739,7 @@ body{
 }
 
 
+/*=============================================== Screen wider than 950 px ======================================================================*/
 @media screen and (min-width:950px){
   #restaurants-list p{
     font-size: 15px;
@@ -833,4 +782,39 @@ body{
   }
 }
 
+/*=============================================== Screen wider than 1120 px ======================================================================*/
+@media screen and (min-width:1120px){
+  .inside #map-container{
+    position: absolute;
+    width: 48%;
+    height:calc(100% - (13%));
+    top: 80px;
+    margin-top: 80px;
+    display:none;
+  }
+}
+@media screen and (min-width:1400px){
+  .inside #map-container{
+width:49%;
+  }
+}
 
+@media screen and (min-width:1600px){
+  .inside #map-container{
+width:50%;
+  }
+}
+
+@media screen and (max-width: 550px){
+body{
+  overflow-x:hidden;
+}
+  .filter-options{
+    display: inline-table;
+    text-align: center;
+  }
+  nav a{
+    font-size: 10pt;
+    letter-spacing: 4px;
+  }
+}
