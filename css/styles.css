@@ -430,7 +430,7 @@ float: left;
 
 /* ========================================= FORM ========================================================================*/
 #reviewForm123{
- 
+  margin: 0 auto;
   padding: 4em 4em 4em;
   max-width: 400px;
   
@@ -506,7 +506,15 @@ display: block;
     background-color: rgba(255,255,255,0);
      
   }
+  /*orientation at https://www.w3schools.com/howto/howto_js_alert.asp*/
+.notvalid{
+  border-radius: 10px;
+  padding: 20px;
+  background-color: #f44336; /* Red */
+  color: white;
+  margin-bottom: 15px;
 
+}
 /*=============================== Media Quereies ================================================================ */
 @media screen and (min-width: 750px){
 #restaurants-list p{
