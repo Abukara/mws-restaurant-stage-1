@@ -41,12 +41,10 @@ self.addEventListener('fetch', (event) => {
   //event.respondWith(async function () {
    
     var requestURL = new URL(event.request.url);
-    //checks call to file
+   
 
     const call = requestURL.pathname.split('/');
-    console.log("pathname: "+requestURL.pathname);
-    console.log("call "+call);
-  if (requestURL.host === serveraddress) {
+    if (requestURL.host === serveraddress) {
     //call to waiting_reviews
     fetchWaitingReviews();
         //clone of request -> request is a Stream.
@@ -221,11 +219,8 @@ function getRestaurant(param, pathname, search) {
 }
 
 
-
-
-
-
 function fetchWaitingReviews() {
+  //check if online then proceed to synchronize
   if(navigator.onLine){
   const opendb = self.openidb();
   //check if db is opened
