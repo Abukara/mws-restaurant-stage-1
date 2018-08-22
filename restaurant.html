@@ -11,6 +11,7 @@
 
 <link rel="manifest" href="/manifest.json">
 
+
   <link rel="preload" as="style" href="css/styles.css" onload="this.rel='stylesheet'">
 
   <title>Restaurant Info</title>
@@ -50,7 +51,7 @@
     <section id="restaurant-container">
       <h2 id="restaurant-name"></h2>
       
-      <button id="favorite-btn" onclick = "markFavorite(this)"><img src="img/star-regular.svg" alt="star"style="width:2vw;"></button>
+      <button id="favorite-btn" onclick = "favoriteRestaurant(this)"><img src="img/star-regular.svg" alt="star"style="width:2vw;"></button>
       <img id="restaurant-img">
 
       <p id="restaurant-cuisine"></p>
@@ -60,23 +61,10 @@
     <!-- end restaurant -->
     <!-- Beginning reviews -->
     <div id="review-form">
-
-   
-    </div>
+   </div>
     <section id="reviews-container">
       <ul id="reviews-list">
-  <!--       const submitbtn = renderHtml("input");
-  submitbtn.setAttribute("type","button");
-  //submitbtn.setAttribute("form","reviewForm123");
-  submitbtn.setAttribute("value","Add Review");
-  submitbtn.setAttribute("name","Name");
-
-  submitbtn.setAttribute("onclick","addReview();");
--->
-
-
-
-        <input type="button" id="synctest"form="reviewForm123"value="Add Review"name="Name"></input>
+       <input type="button" id="synctest"form="reviewForm123"value="Add Review"name="Name"></input>
       </ul>
     </section>
     <!-- End reviews -->
@@ -88,6 +76,7 @@
     Copyright (c) 2017 <a href="/"><strong>Restaurant Reviews</strong></a> All Rights Reserved.
   </footer>
   <!-- End footer -->
+  <!--add service Worker-->
 <script>if ('serviceWorker' in navigator) {
   window.addEventListener('load', function() {
   navigator.serviceWorker.register('../service-worker1.js')
@@ -98,16 +87,17 @@
     console.log('Service worker registration failed, error:', error);
   });
 });
-}</script>
+}
+
+</script>
   <!-- Beginning scripts -->
   <!-- Database helpers -->
  <script type="text/javascript" src="js/dbhelper.js"></script>
   <!-- Main javascript file -->
   <script type="text/javascript" src="js/restaurant_info.js" ></script>
-   <script type="text/javascript" src="/js/store.js"></script>
   <!--Google Maps-->
   <!--key=AIzaSyDjM591f8puFMFiKK56kVZlsXdsCjerPSU -->
-  <script async defer="defer" src="https://maps.googleapis.com/maps/api/js?&callback=initMap"></script>
+   <script async defer="defer" src="https://maps.googleapis.com/maps/api/js?&callback=initMap"></script>
   <!-- End scripts -->
 
 </body>

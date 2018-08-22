@@ -1,11 +1,14 @@
-importScripts('/js/idb.js');
+importScripts('/js/idb-min.js');
 
-//use of from https://github.com/GoogleChromeLabs/airhorn/blob/master/app/sw.js
+//use of  https://github.com/GoogleChromeLabs/airhorn/blob/master/app/sw.js
+
 var urlsToCache = [
   '/', '/index.html',
   '/favicon.ico',
   '/restaurant.html',
-  '/css/styles.css',  
+  '/css/styles.css',
+  '/js/idb-min.js',
+  '/js/dbhelper.js',  
   '/js/main.js',
   '/js/restaurant-info.js',
   '/manifest.json'
@@ -13,18 +16,6 @@ var urlsToCache = [
 let cache_name = 'precache-v1';
 const serveraddress = 'localhost:1337';
 
-function startdb() {
-  idb.open('restaurant', 1, function (upgradeDB) {
-    //create Db objectStore for restaurants
-    const restaurants = upgradeDB.createObjectStore('restaurants', {keyPath: 'id'});
-    //create Db objectStore for reviews
-    const reviews = upgradeDB.createObjectStore('reviews', {keyPath: 'id'});
-    //create Db objectStore for waiting_reviews
-    const waiting_reviews = upgradeDB.createObjectStore('waiting_reviews', {keyPath: 'id',
-      autoIncrement:true });
-
-  });
-}
 
 self.addEventListener('install', function (event) {
   // Perform install steps
@@ -43,14 +34,84 @@ self.addEventListener('install', function (event) {
   )
 });
 
+//orientation at https://developers.google.com/web/ilt/pwa/lab-caching-files-with-service-worker
+//https://developer.mozilla.org/en-US/docs/Web/API/Fetch_API/Using_Fetch
+//https://developers.google.com/web/fundamentals/primers/service-workers/
+self.addEventListener('fetch', (event) => {
+  //event.respondWith(async function () {
+   
+    var requestURL = new URL(event.request.url);
+    //checks call to file
+
+    const call = requestURL.pathname.split('/');
+    console.log("pathname: "+requestURL.pathname);
+    console.log("call "+call);
+  if (requestURL.host === serveraddress) {
+    //call to waiting_reviews
+    fetchWaitingReviews();
+        //clone of request -> request is a Stream.
+    const evRequest = event.request.clone();
+
+    return event.respondWith(fetch(evRequest).then(function (data) {
+      if (data) {
+        var respo = data.clone();
+        if (requestURL.pathname.indexOf('restaurants') === 1) {
+          DataToDB(respo.json(), 'restaurants');
+        } else if (requestURL.pathname.indexOf('reviews') === 1) {
+          DataToDB(respo.json(), 'reviews');
+        }
+        return data;
+      }
+    }).catch(function (e) {
+      console.log(`Could not find url :${requestURL} from the network`);
+      if (event.request.method === 'POST') {
+        event.request.clone().text().then((body)=>{
+          DataToDB(Promise.resolve(JSON.parse(body)), 'waiting_reviews');
+        })
+        }
+        //added method to make it more visible
+      return  getRestaurant(call, requestURL.pathname, requestURL.search);
+    }));
+    return;
+  }
+ //End of Caching Data
+  if (requestURL.origin === location.origin) {
+    return event.respondWith(
+      caches.match(event.request)
+        .then(function (cachedResponse) {
+          // Cache hit - return cachedResponse
+          if (cachedResponse) {
+            return cachedResponse;
+          }
+          // IMPORTANT: Clone the request.
+          var fetchRequest = event.request.clone();
+          return fetch(fetchRequest).then(
+            function (cachedResponse) {
+              // Check for a valid response
+              if (!cachedResponse || cachedResponse.status !== 200 || cachedResponse.type !== 'basic') {
+                return cachedResponse;
+              }
+              // IMPORTANT: Clone the response. A response is a stream;
+              var responseToCache = cachedResponse.clone();
+              caches.open(cache_name)
+                .then(function (cache) {
+                  cache.put(event.request, responseToCache);
+                });
+              return cachedResponse;
+            }
+          ).catch(function (error) { console.log(`error : ${url}`); return new Response('error'); })
+        }).catch(function (error) { console.log(`error : ${url}`); return new Response('error'); })
+    );
+  }
+});
+
 self.addEventListener('activate', function (event) {
   // Create IDB
-  startdb();
+  createDB();
   event.waitUntil(
     caches.keys().then(function (cacheNames) {
       return Promise.all(
         cacheNames.map(function (cacheName) {
-          //remove cache if new cache is there
           if (cacheNames.indexOf(cache_name) === -1) {
             return caches.delete(cacheName);
           }
@@ -60,127 +121,136 @@ self.addEventListener('activate', function (event) {
   );
 });
 
-function addDB(values){
-
-  idb.open('restaurant',1).then(function (db){
-    var transaction = db.transaction('restaurants', 'readwrite');
-    var store = transaction.objectStore('restaurants');
-    return Promise.all(values.map(function (value){
-
-      return store.put(value);
-
-    })).then(function(e){
-
-    }).catch(function(e){
-      transaction.abort();
-      console.log(e);
-    })
-  })
+function createDB() {
+  idb.open('restaurant', 1, function (upgradeDB) {
+    //create Db objectStore for restaurants
+    const restaurants = upgradeDB.createObjectStore('restaurants', {keyPath: 'id'});
+    //create Db objectStore for reviews
+    const reviews = upgradeDB.createObjectStore('reviews', {keyPath: 'id'});
+    //create Db objectStore for waiting_reviews
+    const waiting_reviews = upgradeDB.createObjectStore('waiting_reviews', {keyPath: 'id',
+      autoIncrement:true });
+  });
 }
 
-//orientation at https://developers.google.com/web/ilt/pwa/lab-caching-files-with-service-worker
-//https://developer.mozilla.org/en-US/docs/Web/API/Fetch_API/Using_Fetch
-self.addEventListener('fetch', event => {
-  event.respondWith(async function () {
-    var requestURL = new URL(event.request.url);
-    //checks for general call to localhost
-    if (requestURL.host === serveraddress) {
-      
+//created to have less redudant code
+function openidb(){
+  //check if service worker & idb exist
+  if(!navigator.serviceWorker && !idb){
+    console.log("service worker & idb not available")
+  }
+  return idb.open('restaurant',1);
+}
 
-      return idb.open('restaurant', 1).then(function(db){
-        var transaction = db.transaction('restaurants', 'readonly');
-        var store = transaction.objectStore('restaurants');
+//put data into indexed DB
+function DataToDB(data, type) {
+  data.then(function (response) {
+    const opendb = self.openidb();
+    //check if db is opened
+    if (!opendb)
+      return;
+    opendb.then(db => {
+      const transaction = db.transaction(type, 'readwrite');
+      try {
+        //check for lenght of response and if even a response is there
+        if (response && response.length > 0) {
+          response.forEach(value => {
+            transaction.objectStore(type).put(value);
+          });
+        } else {
+          transaction.objectStore(type).put(response);
+        }
+      } catch (error) {
+        console.log(error);
+      }
+      return transaction.complete;
+    });
+  });
+}
 
-        // Return items from database
-        return store.getAll();
-      }).then((dbdata) => {
+function getRestaurant(param, pathname, search) {
+  const openidb = self.openidb();
+  if (pathname.indexOf('restaurants') === 1) {
+    if (param && param.length > 0) {
 
-      //checks for length of indexdb if its empty load data into database
-        if (!dbdata.length) {
-
-          // returns  data from network
-          return fetch(event.request.url)
-            .then((responseUrl) => {
-
-              // return response;
-              return responseUrl.json()
-                .then(function (values) {
-
-                  // Adds data to database
-                  addDB(values);
-
-                  console.log("Saving to DB");
-                  var response = {
-                    status: 200,
+      const id = param[2];
+      console.log("Param: "+param+" id: "+id);
+      return   openidb.then(db => {
+    return db.transaction('restaurants').objectStore('restaurants').get(parseInt(id)); }).then(function (response) {
+    return response;}).then(function (res) {
+        var init = {
+          status: 200,
                     statusText: "OK",
                     headers: {'Content-Type': 'application/json'}
-                  };
-
-                  const fetchResponse = new Response(JSON.stringify(values), response);
-                  return fetchResponse;
-                })
-              })
-            }else{
-              var response = {
-                status: 200,
-                statusText: "OK",
-                headers: {'Content-Type': 'application/json'}
-              };
-              // stringify Json to keep it in db.
-              const idbResponse = new Response(JSON.stringify(dbdata), response);
-              return idbResponse;
-            }
-          })
-
-          }else{
-      // Try to get the response from a cache.
-      var cachedResponse = await caches.match(event.request);
-
-      // Return it the response if one is foun.
-      if (cachedResponse) {
-
-        return cachedResponse;
-      }
-      // If there was no match in the cache the network will be used.
-
-      return fetch(event.request)
-        .then(function (cachedResponse) {
-
-          return caches.open(cache_name).then(function (cache) {
-            // try to not cache google maps
-            if (event.request.url.indexOf('maps') < 0) {
-              cache.put(event.request.url, cachedResponse.clone());
-            }
-            return cachedResponse;
-          });
-        });
+        };
+        return new Response(JSON.stringify(res), init);
+      });
     }
-  }());
-});
-//checks restaurant id so restaurants can get cached and later be stored in idb.
-function checkrestaurantid(url){
-  var serverurl = /^http:\/\/localhost:1337\/restaurants$/;
-  var serverUrlMatch = url.match(serverurl);
-  if(serverUrlMatch)
-    return 1;
-  return 0;
+    else {
+      return  openidb.then(db => {
+    return db.transaction('restaurants').objectStore('restaurants').getAll(); }).then(function (response) {
+    return response;}).then(function (res) {
+        var init = {
+          status: 200,
+                    statusText: "OK",
+                    headers: {'Content-Type': 'application/json'}
+        };
+        return new Response(JSON.stringify(res), init);
+      });
+    }
+  } else if (pathname.indexOf('reviews') === 1) {
+    console.log('reviews');
+    var id = search.split('=');
+    
+    if (id) {
+      return  opendb.then(db => {
+    return db.transaction('reviews')
+      .objectStore('reviews').getAll();
+  }).then(function (response) {
+    return response.filter(r=> r.restaurant_id==parseInt(id[1]));
+  }).then(function (res) {
+        var init = {
+          status: 200,
+                    statusText: "OK",
+                    headers: {'Content-Type': 'application/json'}
+        };
+        return new Response(JSON.stringify(res),init);
+      });
+    }
+  }
 }
 
-self.addEventListener('activate', function (event) {
-  console.log('Activating new service worker...');
-//Remove old and unwanted caches
-  event.waitUntil(
-    caches.keys().then(function (cacheNames) {
-      return Promise.all(
-        cache_name.map((cache) => {
-          if (cache !== cache_name) {     //cacheName = 'cache-v1'
-            return caches.delete(cache); //Deleting the cache
+
+
+
+
+
+function fetchWaitingReviews() {
+  if(navigator.onLine){
+  const opendb = self.openidb();
+  //check if db is opened
+  if(!opendb)
+    return;
+  return opendb.then(function (db) {
+    return db.transaction('waiting_reviews').objectStore('waiting_reviews').getAll();
+    }).then(function (reviews) {
+      reviews.forEach(function(review){
+        fetch('http://localhost:1337/reviews', {
+          method: 'POST',
+          body: JSON.stringify(review),
+          headers: {
+            'Accept': 'application/json',
+            'Content-Type': 'application/json'
           }
-        })
-      );
-    })
-  );
-});
-/*orientation at
-https://github.com/GoogleChromeLabs/sw-toolbox/issues/227
-*/
+        }).then(function(){
+          if(!opendb)
+            return;
+          return opendb.then(db => {
+      return db.transaction('waiting_reviews','readwrite')
+        .objectStore('waiting_reviews').clear();
+    });
+        });
+        });
+      });
+  }
+  }
