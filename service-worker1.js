@@ -72,12 +72,12 @@ self.addEventListener('fetch', (event) => {
     }));
     return;
   }
- //End of Caching Data
+ //data caching process finished starting return cache if it already exist
   if (requestURL.origin === location.origin) {
     return event.respondWith(
       caches.match(event.request)
         .then(function (cachedResponse) {
-          // Cache hit - return cachedResponse
+          // if cache is there than return cache
           if (cachedResponse) {
             return cachedResponse;
           }
