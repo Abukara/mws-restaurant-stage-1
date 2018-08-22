@@ -13,17 +13,16 @@ class DBHelper {
     const port = 1337 // Change this to your server port
     url= `http://localhost:${port}/restaurants/${id}`;
   }
-static  Reviews_URL_ID(id) {
+  static  Reviews_URL_ID(id) {
     const port = 1337 // Change this to your server port
     return `http://localhost:${port}/reviews/?restaurant_id=${id}`;
   }
   static  Reviews_URL() {
     const port = 1337 // Change this to your server port
-    return `http://localhost:${port}/reviews`;
+    return `http://localhost:${port}/reviews/`;
   }
   static  Favorite_URL(favorite,rest_id) {
     const port = 1337 // Change this to your server port
-    console.log(favorite);
     if(favorite==="yes"){
       return  `http://localhost:${port}/restaurants/${rest_id}/?is_favorite=true`;
     }else{
@@ -32,9 +31,13 @@ static  Reviews_URL_ID(id) {
 
   }
 
-static markAsFavorite(restaurant) {
-  var mark =(restaurant.is_favorite ==='true'?"yes":"no");
-  console.log(mark);
+static favoriteRestaurant(restaurant) {
+  let mark;
+  if(restaurant.is_favorite ==='true')
+     mark =  "yes";
+  else
+     mark =  "no";
+   
   return fetch(DBHelper.Favorite_URL(mark,restaurant.id),{method:'PUT',body:restaurant})
      .then(function (response) {
        if(response.ok) {
@@ -46,7 +49,7 @@ static markAsFavorite(restaurant) {
     }
 
   /**
-   * Fetch all restaurants. change from xhr to aja fetch
+   * Fetch all restaurants. change from xhr to ajax fetch
    */
    static fetchRestaurants(callback) {
        fetch(DBHelper.DATABASE_URL)
@@ -64,7 +67,9 @@ static markAsFavorite(restaurant) {
          }
        ).catch(error => callback(error, null));
      }
-
+  /**
+   * Fetch all reviews
+   */
      static fetchReviewsByRestaurant(id){
        return fetch(DBHelper.Reviews_URL_ID(id))
          .then(response => {
@@ -82,7 +87,7 @@ static markAsFavorite(restaurant) {
 static postReviews(review) {
   return fetch(DBHelper.Reviews_URL(),{method:'post',body:review})
      .then(function (response) {
-       if(response.status === 200) {
+       if(response.status === 201) {
        return response.json();
        } else {
          console.log(`Request failed. Returned status of ${response.status}`);
@@ -221,6 +226,19 @@ static postReviews(review) {
     }
     
   }
+  /**
+   *New Map marker for leaflet a restaurant. Still no working restaurant map for no apparent reason.
+   */
+   static mapMarkerForRestaurantleaf(restaurant, map) {
+    // https://leafletjs.com/reference-1.3.0.html#marker  
+    const marker = new L.marker([restaurant.latlng.lat, restaurant.latlng.lng],
+      {title: restaurant.name,
+      alt: restaurant.name,
+      url: DBHelper.urlForRestaurant(restaurant)
+      })
+      marker.addTo(newMap);
+    return marker;
+  } 
 
   /**
    * Map marker for a restaurant.
