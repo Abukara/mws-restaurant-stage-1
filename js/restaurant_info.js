@@ -2,10 +2,12 @@ let restaurant;
 let reviews;
 var map;
 
+
+
 /**
  * Initialize Google map, called from HTML.
- */
  
+  */
 window.initMap = () => {
   fetchRestaurantFromURL((error, restaurant) => {
     const test = document.getElementById('map');
@@ -16,12 +18,10 @@ window.initMap = () => {
         zoom: 16,
         center: restaurant.latlng,
         scrollwheel: false,
-        format: 'jpg'
+        
       });
-      
       DBHelper.mapMarkerForRestaurant(self.restaurant, self.map);
-      //call to cache shit();
-    }
+      }
   });
 }
 
@@ -53,10 +53,6 @@ function fetchRestaurantFromURL ()  {
       return Promise.reject('No restaurant data');
     }
       self.restaurant = restaurant;
-      //if (!restaurant) {
-      //  console.error(error);
-      //  return;
-     // }
       fillRestaurantHTML();
       fillBreadcrumb();
      // callback(null, restaurant)
@@ -67,82 +63,70 @@ function fetchRestaurantFromURL ()  {
 
 /**
  * Create restaurant HTML and add it to the webpage
-  const inputName = renderHtml('input');
-  inputName.setAttribute("type","text");
-  inputName.setAttribute("name","Name");
  */
 fillRestaurantHTML = (restaurant = self.restaurant) => {
   const name = document.getElementById('restaurant-name');
   name.innerHTML = restaurant.name;
-  //const eman = document.getElementById('test');
-  const favbutton = document.getElementById('favorite-btn');
   
-
+  const favbutton = document.getElementById('favorite-btn');
   //check if restaurant is favorite 
   if(restaurant.is_favorite==='true') {
         favbutton.setAttribute("aria-label","favorite-button");
     favbutton.setAttribute("class","favorite");
-       
+    
   } else {
     favbutton.setAttribute("aria-label","unfavorite-button");
     favbutton.setAttribute("class","unfavorite");
       
   }
-
   const address = document.getElementById('restaurant-address');
   address.innerHTML = restaurant.address;
-
   const image = document.getElementById('restaurant-img');
   image.className = 'restaurant-img lazyload';
-
   const imagesrc = DBHelper.imageUrlForRestaurant(restaurant);
-
   image.setAttribute('src', imagesrc +'-webp.webp');
   image.setAttribute('data-src', imagesrc +'-webp.webp');
   image.setAttribute("alt",'Image of '+restaurant.name);
-
   const cuisine = document.getElementById('restaurant-cuisine');
   cuisine.innerHTML = restaurant.cuisine_type;
-
   // fill operating hours
   if (restaurant.operating_hours) {
     fillRestaurantHoursHTML();
   }
   // fill reviews
-  reviewForm();
+  reviewForm(restaurant);
   fillReviewsHTML();
-
 }
 
 /**
-* MARK as Favorite
+* favorite a restaurant
 */
-markFavorite = (element) => {
-
+favoriteRestaurant = (element) => {
+  //if restaurant is favorite
   if(self.is_favorite ==='true') {
+  //remove favorite class from restaurant 
   element.classList.remove('favorite');
+  // add unfavorite to restaurant
   element.classList.add('unfavorite');
-  self.restaurant.is_favorite ='false';
+  //remove old aria-label from unfavorite button
+  element.removeAttribute('aria-label');
+  //adding aria label  for favorite button to improve accesibility
+  element.setAttribute('aria-label','favorite button');
   self.is_favorite ='false';
-  element.removeAttribute('aria-label');
-  element.setAttribute('aria-label','unfavorite-button');
-
-} else {
-  self.restaurant.is_favorite ='true';
+  } else {
   self.is_favorite ='true';
-  element.removeAttribute('aria-label');
-  element.setAttribute('aria-label','favorite-button');
+  //remove unfavorite class from restaurant
   element.classList.remove('unfavorite');
+  //add favorite class from restaurant 
   element.classList.add('favorite');
+  //remove old aria-label from favorite button
+  element.removeAttribute('aria-label');
+  //adding aria label  for unfavorite button to improve accesibility
+  element.setAttribute('aria-label','unfavorite button');
 }
-DBHelper.markAsFavorite(self.restaurant);
-
+//call to DBHelper favoriteRestaurant
+DBHelper.favoriteRestaurant(self.restaurant);
 }
-
-
-
-
-
 /**
  * Create restaurant operating hours HTML table and add it to the webpage.
  */
@@ -150,33 +134,35 @@ fillRestaurantHoursHTML = (operatingHours = self.restaurant.operating_hours) => 
   const hours = document.getElementById('restaurant-hours');
   for (let key in operatingHours) {
     const row = document.createElement('tr');
-
     const day = document.createElement('td');
     day.innerHTML = key;
     row.appendChild(day);
-
     const time = document.createElement('td');
     time.innerHTML = operatingHours[key];
     row.appendChild(time);
-
     hours.appendChild(row);
   }
 }
 
-function reviewForm (){
+function reviewForm (restaurant){
+  //select review-form container
   const container = document.getElementById('review-form');
-  const form = renderHtml('form');
-  
+  //create form element inside
+  const form = document.createElement('form');
   form.setAttribute('id','reviewForm123');
   form.setAttribute('class','testsync');
- // form.setAttribute('onsubmit','addReview(this);')
+  // form.setAttribute('onsubmit','addReview(this);')
   container.appendChild(form);
-  //field name
-  const headerblock = renderHtml("h2","Review here");
+  //field header name
+  const headerblock = document.createElement("h2");
+  headerblock.innerHTML = `Review ${restaurant.name}`;
   form.appendChild(headerblock);
-  const labelname = renderHtml('label','Reviewer Name:');
+  //create label for Reviewer Name
+  const labelname = document.createElement('label')
+  labelname.innerHTML= 'Reviewer Name:';
   labelname.setAttribute("for","Name");
-  const inputName = renderHtml('input');
+  //create input field for Reviewer Name
+  const inputName = document.createElement('input');
   inputName.setAttribute("type","text");
   inputName.setAttribute("name","Name");
   inputName.setAttribute("id","Name");
@@ -184,24 +170,30 @@ function reviewForm (){
   inputName.setAttribute("required","");
   form.appendChild(labelname);
   form.appendChild(inputName);
-  //field date
-
-  //field rating
-  const labelrating = renderHtml('label','Rating');
+  //label for Review rating
+  const labelrating = document.createElement('label')
+  labelrating.innerHTML='Rating';
   labelrating.setAttribute("for","rating");
-  const rating = renderHtml('select');
+  //dropdown rating 1 - 5
+  const rating = document.createElement('select');
   rating.setAttribute("name","rating");
   rating.setAttribute("id","rating");
   rating.setAttribute("required","");
-  const option_1 = renderHtml('option',"1");
+  //adding dropdown options from 1 - 5
+  const option_1 = document.createElement('option')
+  option_1.innerHTML="1";
   option_1.setAttribute("value","1");
-  const option_2 = renderHtml('option',"2");
+  const option_2 = document.createElement('option')
+  option_2.innerHTML="2";
   option_2.setAttribute("value","2");
-  const option_3 = renderHtml('option',"3");
+  const option_3 = document.createElement('option')
+  option_3.innerHTML="3";
   option_3.setAttribute("value","3");
-  const option_4 = renderHtml('option',"4");
+  const option_4 = document.createElement('option')
+  option_4.innerHTML="4";
   option_4.setAttribute("value","4");
-  const option_5 = renderHtml('option',"5");
+  const option_5 = document.createElement('option')
+  option_5.innerHTML="5";
   option_5.setAttribute("value","5");
   rating.appendChild(option_1);
   rating.appendChild(option_2);
@@ -210,61 +202,56 @@ function reviewForm (){
   rating.appendChild(option_5);
   form.appendChild(labelrating);
   form.appendChild(rating);
-  //field text
-  const labeltext = renderHtml('label','Review Text:');
+  //label for comment field
+  const labeltext = document.createElement('label')
+  labeltext.innerHTML='Review Text:'
   labeltext.setAttribute("for","reviewText1");
- const reviewText = renderHtml("textarea");
+  //comment for review
+ const reviewText = document.createElement("textarea");
  reviewText.setAttribute("rows","4");
  reviewText.setAttribute("cols","50");
  reviewText.setAttribute("form","reviewForm123");
  reviewText.setAttribute("id","reviewText1");
  reviewText.setAttribute("name","reviewTe");
   reviewText.setAttribute("placeholder","Review Text");
-/*const reviewText = renderHtml("input");
-  inputName.setAttribute("type","text");
-  inputName.setAttribute("name","reviewText1");
-  inputName.setAttribute("id","reviewText");
-  inputName.setAttribute("value","Review Text");*/
-  const button = renderHtml("input","Add review");
+  //review button
+  const button = document.createElement("input");
+  button.innerHTML="Add review";
   button.setAttribute("type","button");
   button.setAttribute("id","synctest");
   button.setAttribute("value","Add Review");
   button.setAttribute("form","reviewForm123");
   button.setAttribute("name","Name");
-  button.onclick = addReview
-  const message = renderHtml('div','');
+  button.addEventListener('click',appendReview);
+  const message = document.createElement('div')
+  message.innerHTML='';
   message.setAttribute('id','message_container');
   form.appendChild(labeltext);
   form.appendChild(reviewText);
   form.appendChild(button);
   form.appendChild(message);
-  
-
 } 
-
 
 /**
  * Create all reviews HTML and add them to the webpage.
  */
 fillReviewsHTML = (reviews = self.reviews) => {
+  //if no reviews there than call to reviews by restaurant
   if (!reviews) {
-    console.log("testerser");
     DBHelper.fetchReviewsByRestaurant(self.restaurant.id).then(function(response){
         self.reviews =response;
         fillReviewsHTML();
-
       });
     }
-
   const container = document.getElementById('reviews-container');
   container.innerHTML= '';
-  const Review_title = renderHtml('h2','Reviews');
+  const Review_title = document.createElement('h2')
+  Review_title.innerHTML='Reviews';
   container.appendChild(Review_title);
-  const ul = renderHtml('ul',null);
+  const ul = document.createElement('ul')
+  ul.innerHtml= null;
   ul.id='reviews-list';
-
   if (!reviews){
-    console.log("test12");
     const noReviews = document.createElement('p');
       noReviews.innerHTML = 'No reviews yet!';
       container.appendChild(noReviews);
@@ -275,8 +262,7 @@ fillReviewsHTML = (reviews = self.reviews) => {
     ul.appendChild(createReviewHTML(review));
   });
   container.appendChild(ul);
-  self.initMap();
-}
+  }
 
 /**
  * Create review HTML and add it to the webpage.
@@ -284,26 +270,22 @@ fillReviewsHTML = (reviews = self.reviews) => {
 createReviewHTML = (review) => {
   const li = document.createElement('li');
   const name = document.createElement('p');
-
   name.innerHTML = review.name;
-  name.setAttribute("class","restraurant-reviewer-name")
+  name.setAttribute("class","restraurant-reviewer-name");
   li.appendChild(name);
-
-  const date = renderHtml('p',new Date(review.createdAt).toGMTString().slice(0,16));
+  const date = document.createElement('p');
+  //toUTC string to convert date number to formated Date
+  date.innerHTML = new Date(review.createdAt).toUTCString().slice(0,16);
  // date.innerHTML = review.date;
   date.setAttribute("class","date-of-creation")
   li.appendChild(date);
-
-
   const rating = document.createElement('p');
   rating.innerHTML = `Rating: ${review.rating}`;
   rating.setAttribute("class","review-rating")
   li.appendChild(rating);
-
   const comments = document.createElement('p');
   comments.innerHTML = review.comments;
   li.appendChild(comments);
-
   return li;
 }
 
@@ -332,54 +314,40 @@ getParameterByName = (name, url) => {
     return '';
   return decodeURIComponent(results[2].replace(/\+/g, ' '));
 }
-
-renderHtml =(name,value) => {
-  var element = document.createElement(name);
-  if(value) {
-    element.innerHTML = value;
-  }
-  return element;
-}
-
-function addReview(form)  {
-
- //document.getElementById("review-form").style.display = "none";
+function appendReview(form)  {
+//review json object that gets pushed postReview URL
 const json= {
-  restaurant_id:self.restaurant.id,
-  name:reviewForm123.elements[0].value,
-  rating:reviewForm123.elements[1].value,
-  comments:reviewForm123.elements[2].value,
-  date:Date.now()
+  "restaurant_id":self.restaurant.id,
+  "name":reviewForm123.elements[0].value,
+  "rating":reviewForm123.elements[1].value,
+  "comments":reviewForm123.elements[2].value,
+  "date":Date.now()
 };
-console.log(json);
-
-if(checkEmptyFields(reviewForm123.elements)){
+//check if every field is filled out
+if(validateInputs(reviewForm123.elements)){
   DBHelper.postReviews(JSON.stringify(json)).then(function (result){
-    self.reviews.push(result);
-    
+    self.reviews.push(result);  
     fillReviewsHTML();
 }).catch(function(error){
 
-    self.reviews.push(review);
+    self.reviews.push(json);
     fillReviewsHTML();
   });
-
-
 }
 }
-
-
-
-checkEmptyFields=(formInputs)=>{
+validateInputs=(reviewForm123)=>{
   let valid =true;
 const  message_container= document.querySelector('#message_container');
+//if field is empty message container will be filled and style will be added
 message_container.innerHTML='';
-if(formInputs[0].value ===null ||formInputs[0].value ===""|| (formInputs[1].value <1 || formInputs[1].value >5 || formInputs[1].value ==='')||formInputs[2].value ===null || formInputs[2].value ==='')
+//check for null and if rating empty which shouldn't be possible.
+if(reviewForm123[0].value ==='' ||  reviewForm123[2].value ==='')
  {
+  //if reviewForm123 inputs are equal to '' then valid will be false
    valid =false;
-   message_container.innerHTML='Please fill above empty feild!';
-   message_container.setAttribute('role','alert');
-   message_container.setAttribute('aria-live','assertive');
+   //adds class notvalid to create red border box for visual 
+   message_container.classList.add("notvalid");
+   message_container.innerHTML='Please fill above empty fields!'; 
 }
  return valid;
 }
